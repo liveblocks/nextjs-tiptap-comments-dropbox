@@ -1,13 +1,7 @@
 import { Room } from "@/app/Room";
 import { TextEditor } from "@/components/TextEditor";
 
-interface PageProps {
-  params: {
-    roomId: string;
-  };
-}
-
-export default async function RoomPage({ params }: PageProps) {
+export default async function RoomPage({ params }: any) {
   const { roomId } = await params;
 
   return (

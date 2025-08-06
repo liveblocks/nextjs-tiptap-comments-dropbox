@@ -19,7 +19,7 @@ export function ScenarioMenu() {
   }
 
   return (
-    <Select.Root value={scenario} onValueChange={updateScenario}>
+    <Select.Root value={scenario || ""} onValueChange={updateScenario}>
       <Select.Trigger className="flex items-center justify-between px-3 py-2 text-sm bg-surface border rounded-sm hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-accent/20">
         <Select.Value />
         <Select.Icon>
