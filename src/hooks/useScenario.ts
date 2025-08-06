@@ -27,5 +27,9 @@ export function useScenario() {
     window.location.reload();
   };
 
-  return { scenario, updateScenario, isLoaded: isLoaded && scenario !== null };
+  if (isLoaded && scenario === null) {
+    setScenario("auth-visible");
+  }
+
+  return { scenario, updateScenario, isLoaded };
 }
