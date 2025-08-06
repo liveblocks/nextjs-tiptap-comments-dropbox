@@ -4,11 +4,12 @@ import React from "react";
 import { useScenario, Scenario } from "@/hooks/useScenario";
 import * as Select from "@radix-ui/react-select";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { Button } from "./Button";
 
 const scenarios: { value: Scenario; label: string }[] = [
   { value: "auth-visible", label: "Authenticated user" },
   { value: "auth-hidden", label: "Authenticated user (can't see comments)" },
-  { value: "anonymous", label: "Anonymous user (read everything)" },
+  { value: "anonymous", label: "Anonymous user (can read everything)" },
 ];
 
 export function ScenarioMenu() {
@@ -20,11 +21,13 @@ export function ScenarioMenu() {
 
   return (
     <Select.Root value={scenario || ""} onValueChange={updateScenario}>
-      <Select.Trigger className="flex items-center justify-between px-3 py-2 text-sm bg-surface border rounded-sm hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-accent/20">
-        <Select.Value />
-        <Select.Icon>
-          <ChevronDownIcon className="w-4 h-4" />
-        </Select.Icon>
+      <Select.Trigger asChild>
+        <Button variant="secondary">
+          <div className="flex items-center justify-between">
+            <Select.Value />
+            <ChevronDownIcon className="ml-1.5 w-4 h-4" />
+          </div>
+        </Button>
       </Select.Trigger>
       <Select.Portal>
         <Select.Content className="z-50 bg-surface-elevated border rounded-sm shadow-xl overflow-hidden">

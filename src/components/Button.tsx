@@ -18,7 +18,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       destructive:
         "bg-red text-surface-elevated hover:opacity-80 focus-visible:opacity-80",
       secondary:
-        "bg-surface text-text-light hover:bg-surface-hover hover:text-text focus-visible:bg-surface-hover focus-visible:text-text",
+        "border border-neutral-200 border-solid text-text-light hover:bg-surface-hover hover:text-text focus-visible:bg-surface-hover focus-visible:text-text",
       subtle:
         "text-text-lighter hover:bg-surface hover:text-text-light focus-visible:bg-surface focus-visible:text-text-light data-[active]:bg-surface data-[active]:text-text-light",
     };

@@ -36,11 +36,9 @@ export function TextEditor() {
 // Collaborative text editor with simple rich text and live cursors
 export function Editor() {
   const liveblocks = useLiveblocksExtension({
-    // offlineSupport_experimental: true,
+    offlineSupport_experimental: true,
   });
   const { scenario } = useScenario();
-
-  // console.log("scenario", scenario);
 
   // Set up editor with plugins, and place user info into Yjs awareness and cursors
   const editor = useEditor({
@@ -83,22 +81,30 @@ export function Editor() {
         <div className="flex justify-between items-center gap-3 w-full">
           {/* <ThemeToggle /> */}
           <ScenarioMenu />
-          <div className="flex items-center">
-            <Button onClick={() => createRoomWithContent()}>New file</Button>
-            <Button onClick={() => createRoomWithContent("france")}>
+          <div className="flex items-center gap-3 mr-8">
+            <Button onClick={() => createRoomWithContent()} variant="secondary">
+              New file
+            </Button>
+            <Button
+              onClick={() => createRoomWithContent("france")}
+              variant="secondary"
+            >
               New file (France)
             </Button>
-            <Button onClick={() => createRoomWithContent("beethoven")}>
+            <Button
+              onClick={() => createRoomWithContent("beethoven")}
+              variant="secondary"
+            >
               New file (Beethoven)
             </Button>
           </div>
         </div>
         <Avatars />
       </div>
-      <div className="flex-1 overflow-y-auto scroll-smooth">
+      <div className="flex-1 overflow-y-auto scroll-smooth bg-neutral-50">
         {scenario !== "anonymous" && <FloatingToolbar editor={editor} />}
         <div className="xl:-ml-[310px] min-h-0 h-auto xl:px-8">
-          <div className="relative min-h-[1100px] w-full max-w-[800px] mx-auto my-8 border dark:border-neutral-800">
+          <div className="relative min-h-[1100px] w-full max-w-[800px] mx-auto my-8 border dark:border-neutral-800 bg-white">
             <EditorContent editor={editor} />
             <FloatingComposer editor={editor} style={{ width: 350 }} />
             <div className="absolute top-0 left-full ml-8 min-w-[310px]">
