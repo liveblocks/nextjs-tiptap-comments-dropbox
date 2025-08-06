@@ -24,7 +24,7 @@ export function Threads({ editor }: { editor: TEditor | null }) {
 
   if (threads.length === 0) {
     return (
-      <div className="text-text-lighter pt-8 flex flex-col gap-4 select-none ml-4 text-sm max-w-[260px] max-xl:bg-surface-elevated max-xl:border max-xl:border-border max-xl:shadow-sm max-xl:rounded-sm max-xl:p-8 max-xl:ml-0">
+      <div className="hidden xl:flex text-text-lighter pt-8 flex-col gap-4 select-none ml-4 text-sm max-w-[260px] max-xl:bg-surface-elevated max-xl:border max-xl:border-border max-xl:shadow-sm max-xl:rounded-sm max-xl:p-8 max-xl:ml-0">
         <div className="text-text-light font-semibold text-lg">
           No comments yet
         </div>

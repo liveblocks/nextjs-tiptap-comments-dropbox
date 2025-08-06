@@ -42,7 +42,7 @@ export function Editor() {
 
   // Set up editor with plugins, and place user info into Yjs awareness and cursors
   const editor = useEditor({
-    //editable: scenario === "auth-visible",
+    editable: false,
     editorProps: {
       attributes: {
         // Add styles to editor element
