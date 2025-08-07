@@ -1,6 +1,8 @@
 import { Liveblocks } from "@liveblocks/node";
 import { NextRequest } from "next/server";
 import { getUsers } from "@/database";
+import { cookies } from "next/headers";
+import { v4 as uuidv4 } from "uuid";
 
 // Authenticating your Liveblocks application
 // https://liveblocks.io/docs/authentication
@@ -17,7 +19,6 @@ export async function POST(request: NextRequest) {
 
     // Get user based on auth type
     let user;
-    let permissions: string[] = [];
 
     switch (authType) {
       case "auth-visible":
@@ -31,9 +32,25 @@ export async function POST(request: NextRequest) {
         break;
 
       case "anonymous":
-        // Anonymous user - read-only access
+        // Anonymous user - read-only access with persistent ID
+        const cookieStore = await cookies();
+        let anonId = cookieStore.get("anon_id")?.value;
+
+        if (!anonId) {
+          anonId = uuidv4();
+
+          // Set the cookie for 30 days
+          cookieStore.set("anon_id", anonId, {
+            httpOnly: true,
+            secure: true,
+            path: "/",
+            maxAge: 60 * 60 * 24 * 30,
+            sameSite: "lax",
+          });
+        }
+
         user = {
-          id: "anonymous",
+          id: `anonymous-${anonId}`,
           info: {
             name: "Anonymous User",
             color: "#888888",
@@ -45,7 +62,6 @@ export async function POST(request: NextRequest) {
       default:
         // Default to auth-visible
         user = getUsers()[0];
-        permissions = ["room:read", "room:write", "room:presence:write"];
     }
 
     // Identify the user and return the result
