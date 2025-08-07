@@ -55,11 +55,20 @@ export async function addCommentReaction(
 
     console.log("Reaction added successfully:", response);
     return { success: true, data: response };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error adding reaction:", error);
+
+    // Handle specific Liveblocks errors
+    if (error.status === 409) {
+      return {
+        success: false,
+        error: "Reaction already exists",
+      };
+    }
+
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to add reaction",
+      error: error.message || "Failed to add reaction",
     };
   }
 }
@@ -92,12 +101,20 @@ export async function removeCommentReaction(
 
     console.log("Reaction removed successfully:", response);
     return { success: true, data: response };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error removing reaction:", error);
+
+    // Handle specific Liveblocks errors
+    if (error.status === 404) {
+      return {
+        success: false,
+        error: "Reaction not found",
+      };
+    }
+
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : "Failed to remove reaction",
+      error: error.message || "Failed to remove reaction",
     };
   }
 }

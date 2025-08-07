@@ -214,6 +214,10 @@ function AnonymousReaction({ comment }: { comment: CommentData }) {
         if (result.success) {
           setReactionCount((prev) => prev + 1);
           setHasReacted(true);
+        } else if (result.error === "Reaction already exists") {
+          // If reaction already exists, treat as success
+          setReactionCount((prev) => prev + 1);
+          setHasReacted(true);
         } else {
           setError(result.error || "Failed to add reaction");
         }
@@ -243,11 +247,6 @@ function AnonymousReaction({ comment }: { comment: CommentData }) {
           </>
         )}
       </button>
-      {error && (
-        <div className="text-xs text-red-500 mt-1 text-center max-w-[120px]">
-          {error}
-        </div>
-      )}
     </div>
   );
 }
