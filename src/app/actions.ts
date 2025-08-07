@@ -35,14 +35,6 @@ export async function addCommentReaction(
   userId: string
 ) {
   try {
-    console.log("Adding reaction:", {
-      roomId,
-      threadId,
-      commentId,
-      emoji,
-      userId,
-    });
-
     const response = await liveblocks.addCommentReaction({
       roomId,
       threadId,
@@ -53,7 +45,6 @@ export async function addCommentReaction(
       },
     });
 
-    console.log("Reaction added successfully:", response);
     return { success: true, data: response };
   } catch (error: any) {
     console.error("Error adding reaction:", error);
@@ -81,14 +72,6 @@ export async function removeCommentReaction(
   userId: string
 ) {
   try {
-    console.log("Removing reaction:", {
-      roomId,
-      threadId,
-      commentId,
-      emoji,
-      userId,
-    });
-
     const response = await liveblocks.removeCommentReaction({
       roomId,
       threadId,
@@ -99,7 +82,6 @@ export async function removeCommentReaction(
       },
     });
 
-    console.log("Reaction removed successfully:", response);
     return { success: true, data: response };
   } catch (error: any) {
     console.error("Error removing reaction:", error);

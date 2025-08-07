@@ -5,6 +5,7 @@ import {
   FloatingComposer,
   FloatingToolbar,
   useLiveblocksExtension,
+  Toolbar,
 } from "@liveblocks/react-tiptap";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -18,6 +19,7 @@ import { Threads } from "@/components/Threads";
 import { useScenario } from "@/hooks/useScenario";
 import { Button } from "./Button";
 import { createRoomWithContent } from "@/app/actions";
+import { createBlockInputExtension } from "./BlockInput";
 
 export function TextEditor() {
   const { isLoaded } = useScenario();
@@ -51,6 +53,7 @@ export function Editor() {
       },
     },
     extensions: [
+      createBlockInputExtension(),
       liveblocks,
       StarterKit.configure({
         // The Collaboration extension comes with its own history handling
@@ -102,7 +105,18 @@ export function Editor() {
         <Avatars />
       </div>
       <div className="flex-1 overflow-y-auto scroll-smooth bg-neutral-50">
-        {scenario !== "anonymous" && <FloatingToolbar editor={editor} />}
+        {scenario !== "anonymous" && (
+          <FloatingToolbar editor={editor}>
+            {scenario === "auth-visible" ? (
+              <>
+                <Toolbar.BlockSelector />
+                <Toolbar.SectionInline />
+                <Toolbar.Separator />
+              </>
+            ) : null}
+            <Toolbar.SectionCollaboration />
+          </FloatingToolbar>
+        )}
         <div className="xl:-ml-[310px] min-h-0 h-auto xl:px-8">
           <div className="relative min-h-[1100px] w-full max-w-[800px] mx-auto my-8 border dark:border-neutral-800 bg-white">
             <EditorContent editor={editor} />

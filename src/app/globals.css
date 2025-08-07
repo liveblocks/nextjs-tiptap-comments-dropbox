@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-[data-no-comments] {
+/* [data-no-comments] {
   .lb-tiptap-thread-mark,
   .lb-tiptap-thread-mark-selected {
     all: unset;
   }
-}
+} */

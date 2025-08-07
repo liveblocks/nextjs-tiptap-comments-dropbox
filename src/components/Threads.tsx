@@ -18,9 +18,8 @@ import { addCommentReaction, removeCommentReaction } from "@/app/actions";
 
 export function Threads({ editor }: { editor: TEditor | null }) {
   const { threads } = useThreads();
-  const { scenario } = useScenario();
 
-  if (!threads || !editor || scenario === "auth-hidden") {
+  if (!threads || !editor) {
     return null;
   }
 
@@ -71,9 +70,9 @@ const CustomThread = memo(function CustomThread({
 
   return (
     <div className="shadow-lg border rounded-sm overflow-hidden">
-      {scenario !== "anonymous" && (
+      {scenario === "auth-visible" && (
         <div className="bg-neutral-50 border-b px-4 py-3 text-sm text-neutral-600 font-medium flex justify-between items-center">
-          Review
+          Unresolved comment
           <button
             className="flex items-center gap-2 text-sm text-neutral-600 font-medium"
             onClick={() => {
