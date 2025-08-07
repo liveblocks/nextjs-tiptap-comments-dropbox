@@ -16,10 +16,10 @@ export const createBlockInputExtension = () => {
       return [
         new Plugin({
           props: {
-            // Block typing and content modifications only when auth-hidden
-            handleKeyPress: () => getCurrentScenario() === "auth-hidden",
+            // Block typing and content modifications only when reviewer
+            handleKeyPress: () => getCurrentScenario() === "reviewer",
             handleKeyDown: (view, event) => {
-              if (getCurrentScenario() !== "auth-hidden") return false;
+              if (getCurrentScenario() !== "reviewer") return false;
 
               // Allow navigation keys (arrows, home, end, etc.)
               const navigationKeys = [
@@ -42,20 +42,20 @@ export const createBlockInputExtension = () => {
               // Block all other key presses
               return true;
             },
-            handlePaste: () => getCurrentScenario() === "auth-hidden",
-            handleDrop: () => getCurrentScenario() === "auth-hidden",
-            handleTextInput: () => getCurrentScenario() === "auth-hidden",
+            handlePaste: () => getCurrentScenario() === "reviewer",
+            handleDrop: () => getCurrentScenario() === "reviewer",
+            handleTextInput: () => getCurrentScenario() === "reviewer",
             handleDOMEvents: {
-              // Block input events that modify content only when auth-hidden
-              input: () => getCurrentScenario() === "auth-hidden",
-              beforeinput: () => getCurrentScenario() === "auth-hidden",
-              compositionstart: () => getCurrentScenario() === "auth-hidden",
-              compositionend: () => getCurrentScenario() === "auth-hidden",
-              compositionupdate: () => getCurrentScenario() === "auth-hidden",
-              cut: () => getCurrentScenario() === "auth-hidden",
-              paste: () => getCurrentScenario() === "auth-hidden",
+              // Block input events that modify content only when reviewer
+              input: () => getCurrentScenario() === "reviewer",
+              beforeinput: () => getCurrentScenario() === "reviewer",
+              compositionstart: () => getCurrentScenario() === "reviewer",
+              compositionend: () => getCurrentScenario() === "reviewer",
+              compositionupdate: () => getCurrentScenario() === "reviewer",
+              cut: () => getCurrentScenario() === "reviewer",
+              paste: () => getCurrentScenario() === "reviewer",
               keydown: (view, event) => {
-                if (getCurrentScenario() !== "auth-hidden") return false;
+                if (getCurrentScenario() !== "reviewer") return false;
 
                 // Allow navigation keys
                 const navigationKeys = [
@@ -90,9 +90,9 @@ export const createBlockInputExtension = () => {
               blur: () => false,
             },
           },
-          // Block all transactions that modify content only when auth-hidden
+          // Block all transactions that modify content only when reviewer
           appendTransaction: (transactions, oldState, newState) => {
-            if (getCurrentScenario() === "auth-hidden") {
+            if (getCurrentScenario() === "reviewer") {
               return null; // Prevent any content changes
             }
             return null;

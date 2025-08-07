@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-export type Scenario = "auth-hidden" | "anonymous" | "auth-visible";
+export type Scenario = "reviewer" | "guest" | "writer";
 
 const STORAGE_KEY = "liveblocks-scenario";
 
@@ -12,10 +12,7 @@ export function useScenario() {
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (
-      stored &&
-      ["auth-hidden", "anonymous", "auth-visible"].includes(stored)
-    ) {
+    if (stored && ["reviewer", "guest", "writer"].includes(stored)) {
       setScenario(stored as Scenario);
     }
     setIsLoaded(true);
@@ -28,7 +25,7 @@ export function useScenario() {
   };
 
   if (isLoaded && scenario === null) {
-    setScenario("auth-visible");
+    setScenario("writer");
   }
 
   return { scenario, updateScenario, isLoaded };

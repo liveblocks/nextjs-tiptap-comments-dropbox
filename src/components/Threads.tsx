@@ -70,7 +70,7 @@ const CustomThread = memo(function CustomThread({
 
   return (
     <div className="shadow-lg border rounded-sm overflow-hidden">
-      {scenario === "auth-visible" && (
+      {scenario === "writer" && (
         <div className="bg-neutral-50 border-b px-4 py-3 text-sm text-neutral-600 font-medium flex justify-between items-center">
           Unresolved comment
           <button
@@ -91,7 +91,7 @@ const CustomThread = memo(function CustomThread({
       {thread.comments.map((comment) => (
         <CustomComment key={comment.id} comment={comment} />
       ))}
-      {scenario !== "anonymous" && (
+      {scenario !== "guest" && (
         <Composer threadId={thread.id} className="border-t" />
       )}
     </div>
@@ -118,7 +118,7 @@ const CustomComment = memo(function CustomComment({
         indentContent={true}
       />
       <div className="px-16 pb-6 pt-0.5 -mt-15 z-10 relative">
-        {scenario === "anonymous" ? (
+        {scenario === "guest" ? (
           <AnonymousReaction comment={comment} />
         ) : (
           <AuthenticatedReaction comment={comment} />

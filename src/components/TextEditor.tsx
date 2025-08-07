@@ -78,7 +78,7 @@ export function Editor() {
   return (
     <div
       className="flex flex-col bg-surface absolute inset-0"
-      data-no-comments={scenario === "auth-hidden" || undefined}
+      data-no-comments={scenario === "reviewer" || undefined}
     >
       <div className="flex-none flex justify-between items-center bg-surface-elevated border-b dark:border-neutral-800 p-3">
         <div className="flex justify-between items-center gap-3 w-full">
@@ -105,9 +105,9 @@ export function Editor() {
         <Avatars />
       </div>
       <div className="flex-1 overflow-y-auto scroll-smooth bg-neutral-50">
-        {scenario !== "anonymous" && (
+        {scenario !== "guest" && (
           <FloatingToolbar editor={editor}>
-            {scenario === "auth-visible" ? (
+            {scenario === "writer" ? (
               <>
                 <Toolbar.BlockSelector />
                 <Toolbar.SectionInline />

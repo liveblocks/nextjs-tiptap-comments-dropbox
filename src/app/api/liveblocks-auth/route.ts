@@ -13,25 +13,24 @@ const liveblocks = new Liveblocks({
 
 export async function POST(request: NextRequest) {
   try {
-    // Get auth type from query parameters or default to auth-visible
-    const authType =
-      request.nextUrl.searchParams.get("authType") || "auth-visible";
+    // Get auth type from query parameters or default to writer
+    const authType = request.nextUrl.searchParams.get("authType") || "writer";
 
     // Get user based on auth type
     let user;
 
     switch (authType) {
-      case "auth-visible":
+      case "writer":
         // Full access user - can read, write, and see comments
         user = getUsers()[0];
         break;
 
-      case "auth-hidden":
+      case "reviewer":
         // Authenticated user but can't see comments
         user = getUsers()[1];
         break;
 
-      case "anonymous":
+      case "guest":
         // Anonymous user - read-only access with persistent ID
         const cookieStore = await cookies();
         let anonId = cookieStore.get("anon_id")?.value;
@@ -60,7 +59,7 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        // Default to auth-visible
+        // Default to writer
         user = getUsers()[0];
     }
 
@@ -71,7 +70,7 @@ export async function POST(request: NextRequest) {
 
     session.allow(
       "*",
-      authType === "auth-visible" || authType === "auth-hidden"
+      authType === "writer" || authType === "reviewer"
         ? session.FULL_ACCESS
         : session.READ_ACCESS
     );
