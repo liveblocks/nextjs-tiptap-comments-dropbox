@@ -82,7 +82,6 @@ export function Editor() {
     >
       <div className="flex-none flex justify-between items-center bg-surface-elevated border-b dark:border-neutral-800 p-3">
         <div className="flex justify-between items-center gap-3 w-full">
-          {/* <ThemeToggle /> */}
           <ScenarioMenu />
           <div className="flex items-center gap-3 mr-8">
             <Button onClick={() => createRoomWithContent()} variant="secondary">
@@ -119,7 +118,14 @@ export function Editor() {
         )}
         <div className="xl:-ml-[310px] min-h-0 h-auto xl:px-8">
           <div className="relative min-h-[1100px] w-full max-w-[800px] mx-auto my-8 border dark:border-neutral-800 bg-white">
-            <EditorContent editor={editor} />
+            <EditorContent
+              editor={editor}
+              style={
+                scenario === "reviewer"
+                  ? { caretColor: "transparent" }
+                  : undefined
+              }
+            />
             <FloatingComposer editor={editor} style={{ width: 350 }} />
             <div className="absolute top-0 left-full ml-8 min-w-[310px]">
               <Threads editor={editor} />

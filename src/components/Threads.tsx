@@ -2,7 +2,6 @@ import { AnchoredThreads, FloatingThreads } from "@liveblocks/react-tiptap";
 import { Comment, Composer, Icon } from "@liveblocks/react-ui";
 import { Editor as TEditor } from "@tiptap/react";
 import { useThreads } from "@liveblocks/react/suspense";
-import { CommentIcon } from "@/icons";
 import { useScenario } from "@/hooks/useScenario";
 import { memo, useState, useEffect } from "react";
 import type { CommentData, ThreadData } from "@liveblocks/client";
@@ -31,7 +30,7 @@ export function Threads({ editor }: { editor: TEditor | null }) {
         </div>
         <p className="max-xl:inline-flex max-xl:items-center">
           Create a comment by selecting text and pressing the{" "}
-          <CommentIcon className="inline -mt-0.5" /> Comment button.
+          <Icon.Comment className="inline -mt-0.5" /> Comment button.
         </p>
       </div>
     );
