@@ -4,7 +4,7 @@ import { Editor as TEditor } from "@tiptap/react";
 import { useThreads } from "@liveblocks/react/suspense";
 import { CommentIcon } from "@/icons";
 import { useScenario } from "@/hooks/useScenario";
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import type { CommentData, ThreadData } from "@liveblocks/client";
 import {
   useSelf,
@@ -12,7 +12,9 @@ import {
   useRemoveReaction,
   useMarkThreadAsResolved,
   useMarkThreadAsUnresolved,
+  useRoom,
 } from "@liveblocks/react";
+import { addCommentReaction, removeCommentReaction } from "@/app/actions";
 
 export function Threads({ editor }: { editor: TEditor | null }) {
   const { threads } = useThreads();
@@ -102,6 +104,8 @@ const CustomComment = memo(function CustomComment({
 }: {
   comment: CommentData;
 }) {
+  const { scenario } = useScenario();
+
   if (comment.deletedAt) {
     return null;
   }
@@ -115,14 +119,17 @@ const CustomComment = memo(function CustomComment({
         indentContent={true}
       />
       <div className="px-16 pb-6 pt-0.5 -mt-15 z-10 relative">
-        <AuthenticatedReaction comment={comment} />
+        {scenario === "anonymous" ? (
+          <AnonymousReaction comment={comment} />
+        ) : (
+          <AuthenticatedReaction comment={comment} />
+        )}
       </div>
     </div>
   );
 });
 
 function AuthenticatedReaction({ comment }: { comment: CommentData }) {
-  const { scenario } = useScenario();
   const currentId = useSelf((me) => me.id);
   const upvoteUsers = comment.reactions.filter((r) => r.emoji === "⬆️")?.[0]
     ?.users;
@@ -147,26 +154,100 @@ function AuthenticatedReaction({ comment }: { comment: CommentData }) {
           ? removeReaction(reactionObject)
           : addReaction(reactionObject)
       }
-      disabled={scenario === "anonymous"} // TODO come back and allow this for anon users
     >
       ▲ <span className="text-xs tabular-nums">{upvoteUsers?.length || 0}</span>
     </button>
   );
 }
 
-function AnonymousReaaction() {
-  return (
-    <button
-      className="flex h-11 w-15 justify-center items-center gap-1.5 rounded-full border border-solid border-gray-200 text-base text-gray-400 not-disabled:hover:bg-gray-100 data-[picked]:border-blue-300 data-[picked]:bg-blue-50 data-[picked]:text-blue-600"
-      data-picked={hasUpvoted || undefined}
-      onClick={() =>
-        hasUpvoted
-          ? removeReaction(reactionObject)
-          : addReaction(reactionObject)
+// Anonymous users can't use the useAddReaction hook as they don't have access
+// to write comments, so we're using the Node.js API instead
+function AnonymousReaction({ comment }: { comment: CommentData }) {
+  const [hasReacted, setHasReacted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [reactionCount, setReactionCount] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const roomId = useRoom().id;
+  const currentUserId = useSelf((me) => me.id);
+
+  // Get initial reaction count from the comment
+  useEffect(() => {
+    const upvoteReaction = comment.reactions.find((r) => r.emoji === "⬆️");
+    setReactionCount(upvoteReaction?.users?.length || 0);
+  }, [comment.reactions]);
+
+  const handleReactionClick = async () => {
+    if (!currentUserId) {
+      setError("User ID not available");
+      return;
+    }
+
+    setError(null);
+    setIsLoading(true);
+    try {
+      if (hasReacted) {
+        // Remove reaction
+        const result = await removeCommentReaction(
+          roomId,
+          comment.threadId,
+          comment.id,
+          "⬆️",
+          currentUserId
+        );
+
+        if (result.success) {
+          setReactionCount((prev) => Math.max(0, prev - 1));
+          setHasReacted(false);
+        } else {
+          setError(result.error || "Failed to remove reaction");
+        }
+      } else {
+        // Add reaction
+        const result = await addCommentReaction(
+          roomId,
+          comment.threadId,
+          comment.id,
+          "⬆️",
+          currentUserId
+        );
+
+        if (result.success) {
+          setReactionCount((prev) => prev + 1);
+          setHasReacted(true);
+        } else {
+          setError(result.error || "Failed to add reaction");
+        }
       }
-      disabled={scenario === "anonymous"} // TODO come back and allow this for anon users
-    >
-      ▲ <span className="text-xs tabular-nums">{upvoteUsers?.length || 0}</span>
-    </button>
+    } catch (error) {
+      console.error("Error toggling reaction:", error);
+      setError("Failed to update reaction");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-start justify-start">
+      <button
+        className="flex h-11 w-15 justify-center items-center gap-1.5 rounded-full border border-solid border-gray-200 text-base text-gray-400 not-disabled:hover:bg-gray-100 data-[picked]:border-blue-300 data-[picked]:bg-blue-50 data-[picked]:text-blue-600 disabled:opacity-50"
+        data-picked={hasReacted || undefined}
+        onClick={handleReactionClick}
+        disabled={isLoading}
+        title={error || (hasReacted ? "Remove reaction" : "Add reaction")}
+      >
+        {isLoading ? (
+          <div className="animate-spin w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full" />
+        ) : (
+          <>
+            ▲ <span className="text-xs tabular-nums">{reactionCount}</span>
+          </>
+        )}
+      </button>
+      {error && (
+        <div className="text-xs text-red-500 mt-1 text-center max-w-[120px]">
+          {error}
+        </div>
+      )}
+    </div>
   );
 }

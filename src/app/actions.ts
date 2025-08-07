@@ -27,6 +27,81 @@ export async function createRoomWithContent(document?: "france" | "beethoven") {
   redirect(`/${roomId}`);
 }
 
+export async function addCommentReaction(
+  roomId: string,
+  threadId: string,
+  commentId: string,
+  emoji: string,
+  userId: string
+) {
+  try {
+    console.log("Adding reaction:", {
+      roomId,
+      threadId,
+      commentId,
+      emoji,
+      userId,
+    });
+
+    const response = await liveblocks.addCommentReaction({
+      roomId,
+      threadId,
+      commentId,
+      data: {
+        emoji,
+        userId,
+      },
+    });
+
+    console.log("Reaction added successfully:", response);
+    return { success: true, data: response };
+  } catch (error) {
+    console.error("Error adding reaction:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to add reaction",
+    };
+  }
+}
+
+export async function removeCommentReaction(
+  roomId: string,
+  threadId: string,
+  commentId: string,
+  emoji: string,
+  userId: string
+) {
+  try {
+    console.log("Removing reaction:", {
+      roomId,
+      threadId,
+      commentId,
+      emoji,
+      userId,
+    });
+
+    const response = await liveblocks.removeCommentReaction({
+      roomId,
+      threadId,
+      commentId,
+      data: {
+        emoji,
+        userId,
+      },
+    });
+
+    console.log("Reaction removed successfully:", response);
+    return { success: true, data: response };
+  } catch (error) {
+    console.error("Error removing reaction:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Failed to remove reaction",
+    };
+  }
+}
+
 const france = {
   type: "doc",
   content: [
